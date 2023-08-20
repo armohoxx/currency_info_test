@@ -65,16 +65,68 @@ class CryptoDetailViewController: UIViewController {
     @objc func onClickBackButton() {
         self.presenter?.notifyRouteToMain()
     }
-
-}
-
-extension CryptoDetailViewController: CryptoDetailViewProtocol {
     
-    func displayHeaderNameCrypto(name: String) {
-        self.nameCrypto = name
+    func checkCanDisplayPrice(historyData: CryptoHistoryDisplayEntity) {
+        if historyData.pervious_price.isNaN {
+            self.prevPriceLabel.text = "N/A"
+        } else {
+            self.prevPriceLabel.text = "\(historyData.pervious_price)" + "$"
+        }
+        
+        if historyData.price.isNaN {
+            self.priceLabel.text = "N/A"
+        } else {
+            self.priceLabel.text = "\(historyData.price)" + "$"
+        }
+        
+        if historyData.percent_change_price.isNaN {
+            self.percentChangePriceLabel.text = "N/A"
+        } else {
+            self.percentChangePriceLabel.text = "\(historyData.percent_change_price)" + "%"
+        }
     }
     
-    func displayHistoryCryptoData(historyData: CryptoHistoryDisplayEntity) {
+    func checkCanDisplayMarketCap(historyData: CryptoHistoryDisplayEntity) {
+        if historyData.pervious_market_cap.isNaN {
+            self.prevMarketCapLabel.text = "N/A"
+        } else {
+            self.prevMarketCapLabel.text = "\(historyData.pervious_market_cap)" + "$"
+        }
+        
+        if historyData.market_cap.isNaN {
+            self.marketCapLabel.text = "N/A"
+        } else {
+            self.marketCapLabel.text = "\(historyData.market_cap)" + "$"
+        }
+        
+        if historyData.percent_market_cap.isNaN {
+            self.percentChangeMarketCapLabel.text = "N/A"
+        } else {
+            self.percentChangeMarketCapLabel.text = "\(historyData.percent_market_cap)" + "%"
+        }
+    }
+    
+    func checkCanDisplayVolume(historyData: CryptoHistoryDisplayEntity) {
+        if historyData.pervious_volume.isNaN {
+            self.prevVolumeLabel.text = "N/A"
+        } else {
+            self.prevVolumeLabel.text = "\(historyData.pervious_volume)" + "$"
+        }
+        
+        if historyData.volume.isNaN {
+            self.volumeLabel.text = "N/A"
+        } else {
+            self.volumeLabel.text = "\(historyData.volume)" + "$"
+        }
+        
+        if historyData.percent_volume.isNaN {
+            self.percentChangeVolumeLabel.text = "N/A"
+        } else {
+            self.percentChangeVolumeLabel.text = "\(historyData.percent_volume)" + "%"
+        }
+    }
+    
+    func checkDisplayColorText(historyData: CryptoHistoryDisplayEntity) {
         if let percentChangePriceIsNegative = self.presenter?.checkIsNegative(value: historyData.percent_change_price) as? Bool,
            let percentChangeMarketCapIsNegative = self.presenter?.checkIsNegative(value: historyData.percent_market_cap),
            let percentChangeVolumeIsNegative = self.presenter?.checkIsNegative(value: historyData.percent_volume) {
@@ -96,19 +148,24 @@ extension CryptoDetailViewController: CryptoDetailViewProtocol {
             } else {
                 self.percentChangeVolumeLabel.textColor = UIColor.green
             }
-            
-            self.prevPriceLabel.text = "\(historyData.pervious_price)" + "$"
-            self.priceLabel.text = "\(historyData.price)" + "$"
-            self.percentChangePriceLabel.text = "\(historyData.percent_change_price)" + "%"
-            self.prevMarketCapLabel.text = "\(historyData.pervious_market_cap)" + "$"
-            self.marketCapLabel.text = "\(historyData.market_cap)" + "$"
-            self.percentChangeMarketCapLabel.text = "\(historyData.percent_market_cap)" + "%"
-            self.prevVolumeLabel.text = "\(historyData.pervious_volume)" + "$"
-            self.volumeLabel.text = "\(historyData.volume)" + "$"
-            self.percentChangeVolumeLabel.text = "\(historyData.percent_volume)" + "%"
         } else {
             self.displayAlert(title: "Alert!", message: "Something Wrong.")
         }
+    }
+    
+}
+
+extension CryptoDetailViewController: CryptoDetailViewProtocol {
+    
+    func displayHeaderNameCrypto(name: String) {
+        self.nameCrypto = name
+    }
+    
+    func displayHistoryCryptoData(historyData: CryptoHistoryDisplayEntity) {
+        self.checkCanDisplayPrice(historyData: historyData)
+        self.checkCanDisplayMarketCap(historyData: historyData)
+        self.checkCanDisplayVolume(historyData: historyData)
+        self.checkDisplayColorText(historyData: historyData)
     }
     
     func displayAlert(title: String, message: String) {
